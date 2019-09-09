@@ -1,0 +1,182 @@
+/* 重置弹窗层 layui/css/modules/layer/default/layer.css  */
+.layui-layer-title {
+    padding: 0 80px 0 20px;
+    height: 42px;
+    line-height: 42px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    color: #333;
+    overflow: hidden;
+    /* background-color: #f8f8f8; */
+    background-color: #fff;
+    border-radius: 2px 2px 0 0;
+}
+.layui-layer-iframe iframe {
+    display: block;
+    width: 100%;
+    background-color: #fff;
+}
+.layui-layer-loading {
+    border-radius: 100%;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    background-color: #000;
+    color: #fff;
+    display: none;
+}
+/* 重置 时间插件 layui/css/modules/laydate/default/laydate.css */
+.layui-laydate{
+    border: 0;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.15);
+}
+.layui-laydate-content td.laydate-selected {
+    background: rgba(230,247,255,0.7);
+}
+.laydate-selected:hover {
+    background: rgba(230,247,255,0.7) !important;
+}
+
+
+/* 顶部导航样式修改 */
+.topLevelMenus li i.layui-icon {
+    display: none;
+}
+
+/* 导航icon */
+@font-face {
+    font-family: layui-icon-nav;
+    src: url(http://s.xinstatic.com/btc/o/font/iconfont.eot?v=220);
+    src: url(http://s.xinstatic.com/btc/o/font/iconfont.eot?v=220#iefix) format("embedded-opentype"),
+        url(http://s.xinstatic.com/btc/o/font/iconfont.svg?v=220#iconfont) format("svg"),
+        url(http://s.xinstatic.com/btc/o/font/iconfont.woff?v=220) format("woff"),
+        url(http://s.xinstatic.com/btc/o/font/iconfont.ttf?v=220) format("truetype");
+}
+.navBar .layui-nav-item .layui-icon {
+    font-family: layui-icon-nav !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 右侧frame */
+.clildFrame.layui-tab-content {
+    top: 64px;
+    left: 24px;
+    right: 24px;
+    width: auto !important;
+}
+
+/* 右侧frame 背景色 */
+.layui-body {
+    background: #F8F8F8;
+}
+.middle-frame-box {
+    background: #F8F8F8;
+}
+
+/* frame box */
+.childrenBody {
+    padding: 0 !important; 
+    background-color: initial !important;
+    padding-right: 15px !important;
+}
+
+/* 通用表格调整 */
+.layui-table-body tr:nth-child(2n-1) {
+    background-color: #F3F3F3;
+}
+.layui-table-body tr:nth-child(2n) {
+    background-color: #fff !important;
+}
+.layui-table-view {
+    padding: 0 16px !important;
+}
+.layui-table th {
+    font-size: 14px !important;
+    padding: 16px 0 !important;
+}
+.orderDetail .layui-table th {
+   padding: 0 24px !important;
+}
+.layui-table-body {
+    /* height: auto !important; */
+}
+.layui-table-page {
+    padding: 20px 0 0 0 !important;
+}
+
+/* 表格操作按钮 */
+.layui-table-operation-btn {
+    font-size: 14px;
+    color: #467AD1;
+    background-color: initial;
+}
+.layui-table-operation-btn:hover {
+    color: #0841A2;
+    opacity: 1;
+}
+
+/* 服务顾问 表格调整 */
+.clueListWrap .clueTable tr:nth-child(odd) .clueTable2 tr {
+    background-color: #F3F3F3 !important;
+}
+
+/* 搜索条件表单 */
+.m-search-box {
+    border-bottom: none;
+    margin-bottom: 24px;
+}
+/* .m-search-box .layui-form-label {
+    width: 80px;
+}
+.layui-inline {
+    margin-bottom: 14px;
+} */
+
+/* 搜索条件表单按钮 */
+.condition-button-box {
+    position: initial; 
+    /* bottom: 20px; */
+    /* right: -6px; */
+    display: flex;
+    justify-content: flex-end;
+}
+.condition-button-box .layui-first-btn {
+    margin: 0 !important;
+    background-color: #467AD1 !important;
+}
+.condition-button-box .layui-btn-primary {
+    margin-left: 16px !important;
+}
+
+/* 过户凭证 重置 */
+.transferVoucher-body {
+    padding: 10px 0 0 0px;
+}
+.transferVoucher-body .transferVoucher-div {
+    padding-left: 24px;
+}
+.transferVoucher-img {
+    padding: 10px 0 16px 4px;
+    height: auto;
+    clear: initial;
+    display: flex;
+    flex-wrap: wrap;
+}
+.transferVoucher-img-Div {
+    float: initial;
+    padding-left: 20px;
+}
+.transferVoucher-img-Div:nth-child(2) {
+    margin: 0;
+}
+.transferVoucher-div-first {
+    padding-left: 0px !important;
+}
+
+/* 搜索条件表单 调整 20180714 */
+/* myapp.css */
+/* .layui-form .layui-input, .layui-form .layui-textarea {
+    min-width: 140px;
+} */
+

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet"  href = "/layui2.3.0/css/layui.css" media="all" />
+    <script type="text/javascript" src="/layui2.3.0/layui.js"></script>
+<!--    <link rel="stylesheet" href="/css/public.css" media="all" />
+    <link rel="stylesheet" href="/css/index.css"/>
+    <link rel="stylesheet" href="/css/style.css" media="all" />-->
+    <script type="text/javascript" src="/js/bodyTab.js"></script>
+    <script type="text/javascript" src="/js/cache.js"></script>
+    <script type="text/javascript" src="/js/index.js"></script>
+    <script type="text/javascript" src="/js/jquery-2.0.0.min.js"></script>
+    <meta charset="UTF-8"/>
+    <title>数据源管理</title>
+</head>
+<body>
+<div class="layui-container">
+    <form class="layui-form" lay-filter="dataSourceDetail" action="" id="dataSourceDetail">
+     <!--   <script type="text/html" id="dataSourceDetailTpl">-->
+        {{# if(d.dataSourceId != ""){        }}
+        <div class="layui-form-item">
+            <label class="layui-form-label">ID:</label>
+            <label class="layui-form-mid layui-word-aux">{{d.dataSourceId}}</label>
+        </div>
+        {{# } }}
+        <div class="layui-form-item">
+            <label class="layui-form-label">数据源名称</label>
+            <div class="layui-input-block">
+                <input type="text" value="{{d.dataSourceName}}" name="dataSourceName"  lay-verify="required" placeholder="数据源名称" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">主库</label>
+            <div class="layui-input-block">
+                <select name="master" lay-verify="required" value="{{ d.master.dataBaseId}}" id="dataBaseSelect">
+
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">从库</label>
+            <div class="layui-input-block" id="dataBaseCheckbox">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="status" lay-skin="switch" lay-value="1|0" lay-text="启用|禁用"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+<!--        </script>-->
+    </form>
+</div>
+
+<script type="text/html" id="dataBaseSelectTpl">
+    <option value=""></option>
+    {{#  layui.each(d, function(index, item){ }}
+    <option value="{{item.dataBaseId}}">{{item.dataBaseName}}( {{item.address}})</option>
+    {{# }) }}
+</script>
+
+<script type="text/html" id="dataBaseCheckboxTpl">
+    {{#  layui.each(d, function(index, item){ }}
+    <input type="checkbox" name="slaveList" title="{{item.dataBaseName}}({{item.address}})" value="{{item.dataBaseId}}"/>
+    {{# }) }}
+</script>
+<script>
+    var dataSource = {
+        dataSourceId:"",
+        dataSourceName:"",
+        projectId:'',
+        master:{},
+        slaveList:[],
+        status:""
+    }
+
+
+layui.config({
+    version: true
+}).use(['form', 'layedit', 'laydate','laytpl','element'], function() {
+    var form = layui.form;
+    var laytpl = layui.laytpl;
+    var dataSourceId =  layui.router().search.dataSourceId;
+    if(parent.data == undefined){
+        layer.alert("不能直接访问此页面");
+        dataSource.projectId = layui.router().search.projectId;
+    }else{
+        dataSource.projectId = parent.data.projectId;
+    }
+
+
+
+
+    getDataBaseList();    //加载下拉框，复选框数据
+    if(dataSourceId != undefined){
+        dataSource.dataSourceId = dataSourceId;
+        getDataSourceDetail(dataSourceId);
+    }else{
+        init(dataSource);
+    }
+
+    function getDataSourceDetail(dataSourceId){
+        layui.jquery.ajax({
+            url: "/dataSource/get",
+            type: "POST",
+            dataType: "json",
+            data:{'dataSourceId':dataSourceId},
+            success: function (result) {
+                if(result.code == 1){
+                    //基本数据填充
+
+                    //表单数据
+                    init(result.data);
+                }
+            },
+            error: function (e) {
+                layer.msg("加载数据出错，请稍后重试！", {icon: 5});
+            }
+        });
+    }
+    function getDataBaseList(){
+        layui.jquery.ajax({
+            url: "/dataBase/list",
+            type: "POST",
+            dataType: "json",
+            success: function (result) {
+                if(result.code == 1){
+                    var data = result.data;
+                    initTpl("dataBaseSelectTpl","dataBaseSelect",data);
+                    initTpl("dataBaseCheckboxTpl","dataBaseCheckbox",data);
+                    form.render();
+                }
+            },
+            error: function (e) {
+                layer.msg("加载数据出错，请稍后重试！", {icon: 5});
+            }
+        });
+    }
+    function initTpl(tpl,dom,data) {
+        var tpl = document.getElementById(tpl).innerHTML;
+        laytpl(tpl).render(data, function(render){
+            document.getElementById(dom).innerHTML = render;
+        });
+    }
+
+    function init(data) {
+        initTpl("dataSourceDetail","dataSourceDetail",data);
+        form.val('dataSourceDetail',{
+            //'status':data.status
+            'status':1,
+            'master':data.master.dataBaseId
+        });
+        checkBoxes($("[name='slaveList']"),data.slaveList);
+        form.render();
+    }
+
+    function checkBoxes($checkboxes,slaveList) {
+        $checkboxes.each(function (index) {
+            for(var s in slaveList){
+                if($checkboxes[index].value == slaveList[s].dataBaseId){
+                    $checkboxes[index].checked  = true;
+                }
+            }
+        });
+    }
+
+    form.on('submit(formDemo)', function(obj){
+        var data = obj.field;
+        dataSource['dataSourceName']= data.dataSourceName;
+        dataSource.master['dataBaseId'] = data.master
+        dataSource['status'] = data.status == 'on' ? 1 : 0;
+        var slaveList = [];
+        $("input:checkbox[name='slaveList']:checked").each(function(i){
+            slaveList[i] = {dataBaseId:$(this).val()};
+        });
+        dataSource['slaveList'] = slaveList;
+        update(dataSource);
+        return false;
+    });
+    
+    function update() {
+        var url;
+        if(dataSource.dataSourceId == ''){
+            url = '/dataSource/add';
+        }else {
+            url = '/dataSource/update';
+        }
+        layui.jquery.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            data:JSON.stringify(dataSource),
+            contentType:"application/json",
+            success: function (result) {
+                if(result.code == 1){
+                    layer.msg('操作成功', function(){
+                        parent.layer.close(parent.layer.getFrameIndex(window.name));
+                    });
+                }else {
+                    layer.alert("操作失败")
+                }
+            }
+        });
+    }
+
+});
+</script>
+</body>
+</html>

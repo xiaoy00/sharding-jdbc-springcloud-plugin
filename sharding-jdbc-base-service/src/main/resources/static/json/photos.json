@@ -1,0 +1,19 @@
+{
+  "title": "查看图片", 
+  "id": 123,
+  "start": 0,
+  "data": [  
+    {
+      "alt": "图1",
+      "pid": 1, 
+      "src": "http://c2.xinstatic.com/f1/20170601/1448/592fb8d60b9a9663502.jpg",
+      "thumb": "https://c3.xinstatic.com/f3/20180515/1456/5afa84aec5e9e576946_20.jpg"
+    }, 
+    {
+      "alt": "图2",
+      "pid": 2,
+      "src": "http://c2.xinstatic.com/f1/20170601/1448/592fb8d60b9a9663502.jpg", 
+      "thumb": "https://c3.xinstatic.com/f3/20180515/1456/5afa84aec5e9e576946_20.jpg"
+    }
+  ]
+}

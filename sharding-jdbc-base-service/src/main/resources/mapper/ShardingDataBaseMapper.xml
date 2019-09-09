@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xin.sharding.mapper.ShardingDataBaseMapper">
+  <resultMap id="BaseResultMap" type="com.xin.sharding.model.ShardingDataBase">
+    <id column="data_base_id" jdbcType="INTEGER" property="dataBaseId" />
+    <result column="data_source_id" jdbcType="INTEGER" property="dataSourceId" />
+    <result column="data_base_type" jdbcType="INTEGER" property="dataBaseType" />
+    <result column="data_base_name" jdbcType="VARCHAR" property="dataBaseName" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+  </resultMap>
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+     sd.data_base_id, sd.data_base_name,sd.address,m.status as data_base_type,m.data_source_id as data_source_id
+    from sharding_database sd
+    LEFT JOIN  sharding_source_base_mapping m
+    ON sd.data_base_id = m.data_base_id
+    where data_base_id = #{dataBaseId,jdbcType=INTEGER} and m.status != -1
+  </select>
+  <select id="selectByDataSourceId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+     sd.data_base_id, sd.data_base_name,sd.address,m.status as data_base_type,m.data_source_id as data_source_id
+    from sharding_source_base_mapping m
+    left JOIN sharding_database sd
+    ON m.data_base_id = sd.data_base_id
+    where m.data_source_id = #{dataSourceId,jdbcType=INTEGER} and m.status != -1
+  </select>
+  <select id="selectAll" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+      *
+    from sharding_database
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sharding_database
+    where data_base_id = #{dataBaseId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.xin.sharding.model.ShardingDataBase">
+    insert into sharding_database ( data_base_name,address)
+    values (#{dataBaseName,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.xin.sharding.model.ShardingDataBase">
+    update sharding_database
+    <set>
+      <if test="dataSourceId != null">
+        data_source_id = #{dataSourceId,jdbcType=INTEGER},
+      </if>
+      <if test="dataBaseType != null">
+        data_base_type = #{dataBaseType,jdbcType=INTEGER},
+      </if>
+      <if test="dataBaseName != null">
+        data_base_name = #{dataBaseName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where data_base_id = #{dataBaseId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xin.sharding.model.ShardingDataBase">
+    update sharding_database
+    set data_source_id = #{dataSourceId,jdbcType=INTEGER},
+      data_base_type = #{dataBaseType,jdbcType=INTEGER},
+      data_base_name = #{dataBaseName,jdbcType=VARCHAR}
+    where data_base_id = #{dataBaseId,jdbcType=INTEGER}
+  </update>
+</mapper>

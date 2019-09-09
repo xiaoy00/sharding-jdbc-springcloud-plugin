@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet"  href = "/layui2.3.0/css/layui.css" media="all" />
+    <script type="text/javascript" src="/layui2.3.0/layui.js"></script>
+    <link rel="stylesheet" href="/css/public.css" media="all" />
+    <link rel="stylesheet" href="/css/index.css"/>
+    <link rel="stylesheet" href="/css/style.css" media="all" />
+    <script type="text/javascript" src="/js/bodyTab.js"></script>
+    <script type="text/javascript" src="/js/cache.js"></script>
+    <script type="text/javascript" src="/js/index.js"></script>
+    <script type="text/javascript" src="/js/jquery-2.0.0.min.js"></script>
+    <meta charset="UTF-8"/>
+    <title>项目管理</title>
+</head>
+<body>
+<div class="layui-container">
+    <form class="layui-form" lay-filter="logicTableDetail" action="" id="logicTableDetail">
+     <!--   <script type="text/html" id="dataSourceDetailTpl">-->
+        {{# if(d.logicTableId == ""){        }}
+        <div class="layui-form-item">
+            <label class="layui-form-label">逻辑表名称</label>
+            <label class="layui-form-mid layui-word-aux">{{d.logicTableId}}</label>
+            <div class="layui-input-block">
+                <input type="text" value="{{d.logicTableName}}" name="logicTableName"  lay-verify="required" placeholder="逻辑表名称" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">主键</label>
+            <div class="layui-input-block">
+                <input type="text" value="{{d.primaryKey}}" name="primaryKey"  lay-verify="required" placeholder="主键" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">分表字段</label>
+            <div class="layui-input-block">
+                <input type="text" value="{{d.shardingCol}}" name="shardingCol"  lay-verify="required" placeholder="分表字段" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        {{# }else{ }}
+        <div class="layui-form-item">
+            <label class="layui-form-label">ID:</label>
+            <label class="layui-form-mid layui-word-aux">{{d.logicTableId}}</label>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">逻辑表名称</label>
+            <label class="layui-form-mid layui-word-aux">{{d.logicTableName}}</label>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">主键</label>
+            <label class="layui-form-mid layui-word-aux">{{d.primaryKey}}</label>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">分表字段</label>
+            <label class="layui-form-mid layui-word-aux">{{d.shardingCol}}</label>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">组信息</label>
+            <label class="layui-form-mid layui-word-aux" id="groupList">
+                {{#  layui.each(d.groupList, function(index, item){ }}
+                    {{# if(item.status == 1){ }}
+                    <input type="checkbox" name="groupList" lay-filter ='groupList' title=" {{item.groupName}}(可写)" value="{{item.groupId}}" checked/>
+                    {{# } else{ }}
+                    <input type="checkbox" name="groupList" lay-filter ='groupList' title="{{item.groupName}}(只读)" value="{{item.groupId}}" />
+                    {{# } }}
+                {{# }) }}
+            </label>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">表信息</label>
+            <label class="layui-form-mid layui-word-aux">
+                <table class="layui-table" id="tableList" lay-skin="row" style="border-style: none;background-color:#ffffff" title="物理表" width='50%'  lay-filter="tableList">
+                    <thead>
+                    <!--<td lay-data="{field:'tableId',width:'10%'}"></td>-->
+                    <td lay-data="{field:'actualTableName',width:'50%'}">物理表</td>
+                    <td lay-data="{field:'dataSourceName',width:'50%'}">数据源</td>
+                    <!--<th lay-data="{fixed: 'right', width:150, align:'center', toolbar: '#barDemo'}"></th>-->
+                    </thead>
+                </table>
+            </label>
+        </div>
+        {{# } }}
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">状态</label>
+            <label class="layui-form-mid layui-word-aux">
+                <input type="checkbox" name="status" lay-skin="switch" lay-value="1|0" lay-text="启用|禁用"/>
+            </label>
+        </div>
+        {{# if(d.logicTableId == ""){        }}
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <label class="layui-form-mid layui-word-aux">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </label>
+        </div>
+        {{# } }}
+<!--        </script>-->
+    </form>
+</div>
+
+
+
+
+
+<script>
+    var logicTable = {
+        logicTableId:"",
+        logicTableName:"",
+        projectId:'',
+        primaryKey:'',
+        shardingCol:'',
+        groupList:[],
+        status:""
+    }
+
+
+layui.config({
+    version: true
+}).use(['form','table', 'layedit', 'laydate','laytpl','element'], function() {
+    var form = layui.form;
+    var laytpl = layui.laytpl;
+    var table = layui.table;
+
+    var logicTableId =  layui.router().search.logicTableId;
+    if(parent.data == undefined){
+        layer.alert("不能直接访问此页面");
+        logicTable.projectId = layui.router().search.projectId;
+    }else{
+        logicTable.projectId = parent.data.projectId;
+    }
+    if(logicTableId != undefined){
+        getLogicTableDetail(logicTableId);
+    }else{
+        init(logicTable);
+    }
+
+    form.on('checkbox(groupList)',function (data) {
+        initTableList(data.value);
+        $('#groupList').find("input").each(function () {
+            this.checked = false;
+        });
+        data.elem.checked = true;
+        form.render();
+    })
+
+
+    function initTableList(groupId) {
+        table.init('tableList', {
+            url:'/table/byGroup?groupId='+groupId,
+            even:false,
+            parseData:function (res) {
+                return {
+                    "code" : res.code == 1 ? 0 : -1,
+                    "msg" : res.msg,
+                    "count" : res.count,
+                    "data" : res.data
+                };
+            }
+        });
+    }
+
+    function getLogicTableDetail(){
+        layui.jquery.ajax({
+            url: "/logicTable/get",
+            type: "POST",
+            dataType: "json",
+            data:{'logicTableId':logicTableId},
+            success: function (result) {
+                if(result.code == 1){
+                    //表单数据
+                    init(result.data);
+                }
+            },
+            error: function (e) {
+                layer.msg("加载数据出错，请稍后重试！", {icon: 5});
+            }
+        });
+    }
+
+    function initTpl(tpl,dom,data) {
+        var tpl = document.getElementById(tpl).innerHTML;
+        laytpl(tpl).render(data, function(render){
+            document.getElementById(dom).innerHTML = render;
+        });
+    }
+
+    function init(data) {
+        initTpl("logicTableDetail","logicTableDetail",data);
+        form.val('logicTableDetail',{
+            'status':1
+        });
+        var groupId;
+        for(var index in data.groupList){
+            if(data.groupList[index].status == 1){
+                groupId = data.groupList[index].groupId;
+            }
+        }
+        initTableList(groupId);
+        form.render();
+    }
+
+
+    form.on('submit(formDemo)', function(obj){
+        var data = obj.field;
+        logicTable['logicTableId'] = data.logicTableId == undefined ? "" : data.logicTableId;
+        logicTable['logicTableName']= data.logicTableName;
+        logicTable['primaryKey'] = data.primaryKey;
+        logicTable['shardingCol'] = data.shardingCol;
+        update(logicTable);
+        return false;
+    });
+
+    form.on('radio(filter)', function(data){
+        console.log(data.elem); //得到radio原始DOM对象
+        console.log(data.value); //被点击的radio的value值
+    });
+
+
+
+    function update() {
+        var url;
+        if(logicTable.logicTableId == ''){
+            url = '/logicTable/add';
+        }else {
+            url = '/logicTable/update';
+        }
+        layui.jquery.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            data:JSON.stringify(logicTable),
+            contentType:"application/json",
+            success: function (result) {
+                if(result.code == 1){
+                    layer.msg('操作成功', function(){
+                        parent.layer.close(parent.layer.getFrameIndex(window.name));
+                    });
+                }else {
+                    layer.alert("操作失败")
+                }
+            }
+        });
+    }
+
+});
+</script>
+</body>
+</html>

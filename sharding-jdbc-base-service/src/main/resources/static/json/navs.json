@@ -1,0 +1,124 @@
+{
+	"contentManagement": [
+        {
+			"title": "登陆页",
+			"icon": "icon-text",
+            "href": "page/login/login.html",
+            "target": "_blank",
+			"spread": false
+        },
+        {
+            "title": "表格与搜索框demo",
+			"icon": "&#xe95c;",
+			"href": "page/user/accountDetail.html",
+			"spread": false
+        },
+        {
+			"title": "车辆管理--父子菜单demo",
+			"icon": "&#xe95c;",
+			"href": "",
+			"spread": false,
+			"children": [
+				{
+					"title": "线索管理",
+					"href": "page/systemSetting/clueDetail.html",
+					"spread": false
+				},
+				{
+					"title": "拍品管理",
+					"href": "page/paipinguanli/paipinguanli.html",
+					"spread": false
+                },
+                {
+					"title": "订单管理",
+					"href": "page/dingdanguanli/dingdanguanli.html",
+					"spread": false
+				}
+			]
+		},
+        {
+			"title": "拍品管理",
+			"icon": "&#xe634;",
+			"href": "page/paipinguanli/paipinguanli.html",
+			"spread": false
+        },
+        {
+			"title": "拍品详情",
+			"icon": "&#xe634;",
+			"href": "page/paipinxiangqing/paipinxiangqing.html",
+			"spread": false
+		},
+        {
+			"title": "订单管理",
+			"icon": "&#xe634;",
+			"href": "page/dingdanguanli/dingdanguanli.html",
+			"spread": false
+        },
+        {
+			"title": "线索管理",
+			"icon": "&#xe634;",
+			"href": "page/systemSetting/clueDetail.html",
+			"spread": false
+        },
+		{
+			"title": "服务顾问---跟进",
+			"icon": "&#xe634;",
+			"href": "page/systemSetting/basicParameter.html",
+			"spread": false
+        },
+        {
+			"title": "服务顾问---线索列表",
+			"icon": "&#xe634;",
+			"href": "page/systemSetting/clueList.html",
+			"spread": false
+        }
+	],
+	"memberCenter": [
+        {
+            "title": "面签审核",
+            "icon": "&#xe61c;",
+            "href": "page/user/faceMember.html",
+            "spread": false
+        },
+        {
+            "title": "面签审核详情",
+            "icon": "&#xe61c;",
+            "href": "page/member/faceSigningAudit.html",
+            "spread": false
+        },
+        {
+            "title": "会员管理",
+            "icon": "&#xe609;",
+            "href": "page/user/member.html",
+            "spread": false
+        }
+    ],
+    "securityDeposit": [
+		{
+			"title": "帐户明细",
+			"icon": "&#xe612;",
+			"href": "page/user/accountDetail.html",
+			"spread": false
+		},
+		{
+            "title": "充值",
+            "icon": "&#xe609;",
+            "href": "page/user/recharge.html",
+            "spread": false
+        },
+        {
+			"title": "帮助说明",
+			"icon": "&#xe612;",
+			"href": "page/user/help.html",
+			"spread": false
+		}
+	],
+	"systemeSttings": [
+		{
+			"title": "交易费设置",
+			"icon": "&#xe634;",
+			"href": "page/transactionSetting/transactionSetting.html",
+			"spread": false
+        }
+	]
+}

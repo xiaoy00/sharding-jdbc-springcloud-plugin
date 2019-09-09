@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xin.sharding.mapper.ShardingLogicTableMapper">
+  <resultMap id="BaseResultMap" type="com.xin.sharding.model.ShardingLogicTable">
+    <id column="logic_table_id" jdbcType="INTEGER" property="logicTableId" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="logic_table_name" jdbcType="VARCHAR" property="logicTableName" />
+    <result column="primary_key" jdbcType="VARCHAR" property="primaryKey" />
+    <result column="sharding_col" jdbcType="VARCHAR" property="shardingCol" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    logic_table_id, project_id, logic_table_name,primary_key,sharding_col
+  </sql>
+
+  <select id="selectByProjectId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sharding_logic_table
+    where project_id = #{projectId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sharding_logic_table
+    where logic_table_id = #{logicTableId,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sharding_logic_table
+    where logic_table_id = #{logicTableId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.xin.sharding.model.ShardingTable">
+
+    insert into sharding_logic_table (logic_table_id, project_id, logic_table_name,
+      primary_key,sharding_col)
+    values (#{logicTableId,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER}, #{logicTableName,jdbcType=VARCHAR},
+      #{primaryKey,jdbcType=VARCHAR},#{shardingCol,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.xin.sharding.model.ShardingTable">
+    update sharding_table
+    <set>
+      <if test="logicTableId != null">
+        logic_table_id = #{logicTableId,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="logicTableName != null">
+        logic_table_name = #{logicTableName,jdbcType=INTEGER},
+      </if>
+      <if test="primaryKey != null">
+        primary_key = #{primaryKey,jdbcType=VARCHAR},
+      </if>
+      <if test="shardingCol != null">
+      sharding_col = #{shardingCol,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where logic_table_id = #{logicTableId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xin.sharding.model.ShardingTable">
+    update sharding_table
+    set project_id = #{projectId,jdbcType=VARCHAR},
+      logic_table_name = #{logicTableName,jdbcType=INTEGER},
+      primary_key = #{primaryKey,jdbcType=INTEGER},
+      sharding_col = #{shardingCol,jdbcType=INTEGER},
+    where logic_table_id = #{logicTableId,jdbcType=INTEGER}
+  </update>
+</mapper>

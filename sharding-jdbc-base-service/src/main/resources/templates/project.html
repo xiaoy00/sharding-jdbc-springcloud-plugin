@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet"  href = "/layui2.3.0/css/layui.css" media="all" />
+    <script type="text/javascript" src="/layui2.3.0/layui.js"></script>
+
+    <script type="text/javascript" src="/js/bodyTab.js"></script>
+    <script type="text/javascript" src="/js/cache.js"></script>
+    <script type="text/javascript" src="/js/index.js"></script>
+    <script type="text/javascript" src="/js/html/project/index.js"></script>
+    <title>项目管理</title>
+</head>
+
+<body>
+<div class="layui-container">
+    <div class="layui-tab" lay-filter="demo">
+        <ul class="layui-tab-title">
+            <li class="layui-this" lay-filter="dataSourceTab"><span>数据源管理</span></li>
+            <li lay-filter="logicTableTab"><span>逻辑表管理</span></li>
+            <li lay-filter="groupTab"><span>组管理</span></li>
+            <li lay-filter="tableTab"><span>物理表管理</span></li>
+            <li lay-filter="dataBaseTab"><span>数据库管理</span></li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show ">
+                <table class="layui-table" id="dataSourceList" lay-size="lg" lay-skin="row"  lay-filter="dataSourceList">
+                    <thead>
+                    <tr>
+                        <th lay-data="{field:'dataSourceId',width:'5%'}">ID</th>
+
+                        <th lay-data="{field:'dataSourceName',width:'15%'}">逻辑数据源</th>
+
+                        <th lay-data="{field:'master',title:'主库',width:'25%',templet: '#masterTpl'}">主库</th>
+
+                        <th lay-data="{field:'slaveList',width:'40%',templet:'#slaveListTpl'}">从库</th>
+                        <th lay-data="{fixed: 'right', width:'15%', align:'center', toolbar: '#barDemo'}"></th>
+                    </tr>
+                    </thead>
+                </table>
+                <button class="layui-btn layui-btn-normal" lay-filter="addDataSource" id="addDataSource" >添加</button>
+            </div>
+           <div class="layui-tab-item">
+                <table class="layui-table" id="logicTableList" lay-size="lg" lay-skin="row" lay-filter="logicTableList">
+                    <thead>
+                        <tr>
+                            <th lay-data="{field:'logicTableId',width:'10%'} ">ID</th>
+                            <th lay-data="{field:'logicTableName',width:'15%'}">逻辑表名称</th>
+                            <th lay-data="{field:'primaryKey',title:'主键',width:'15%'}">主键</th>
+                            <th lay-data="{field:'shardingCol',width:'15%'}">分表字段</th>
+                            <th lay-data="{field:'groupList',templet: '#groupListTpl',width:'15%'}">
+                                分组信息
+                            </th>
+                            <th lay-data="{fixed: 'right', width:'30%', align:'center', toolbar: '#logicBar'}"></th>
+                        </tr>
+                    </thead>
+                </table>
+               <button class="layui-btn layui-btn-normal"  lay-filter= "addLogicTable" id="addLogicTable" >添加</button>
+            </div>
+            <div class="layui-tab-item" >
+                <table class="layui-table" id="groupList" lay-size="lg" lay-skin="row" lay-filter="groupList" >
+                    <thead>
+                    <tr>
+                        <th lay-data="{field:'groupId',width:'15%'}">ID</th>
+                        <th lay-data="{field:'logicTableName',width:'30%',sort:'true'}">逻辑表</th>
+                        <th lay-data="{field:'groupName',width:'15%'}">组名称</th>
+                        <th lay-data="{field:'status',title:'状态',width:'40%',templet:'#groupStatusTpl'}">状态</th>
+        <!--                <th lay-data="{fixed: 'right', width:150, align:'center', toolbar: '#barDemo'}"></th>-->
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+
+            <div class="layui-tab-item" >
+                <table class="layui-table" id="tableList" lay-size="lg" lay-skin="row" lay-filter="tableList">
+                    <thead>
+                    <tr>
+                        <th lay-data="{field:'tableId',width:'10%'}">ID</th>
+                        <th lay-data="{field:'logicTableName',width:'20%',sort:'true'}">逻辑表</th>
+                        <th lay-data="{field:'groupName',width:'20%'}">分组</th>
+                        <th lay-data="{field:'actualTableName',width:'25%'}">真实表名称</th>
+                        <th lay-data="{field:'dataSourceName',width:'25%'}">数据源</th>
+        <!--                <th lay-data="{fixed: 'right', width:150, align:'center', toolbar: '#barDemo'}"></th>-->
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="layui-tab-item" >
+                <table class="layui-table" id="dataBaseList" lay-size="lg" lay-skin="row" lay-filter="dataBaseList">
+                    <thead>
+                    <tr>
+                        <th lay-data="{field:'dataBaseId',width:'30%'}">ID</th>
+                        <th lay-data="{field:'dataBaseName',width:'30%'}">数据库名称</th>
+                        <th lay-data="{field:'address',width:'40%'}">ip地址</th>
+                        <!--                <th lay-data="{fixed: 'right', width:150, align:'center', toolbar: '#barDemo'}"></th>-->
+                    </tr>
+                    </thead>
+                </table>
+                <button class="layui-btn layui-btn-normal" lay-filter="addDataBase" id="addDataBase" >添加</button>
+            </div>
+        </div>
+    </div>
+    <script type="text/html" id="masterTpl">
+        {{ d.master.dataBaseName }}({{ d.master.address }})
+    </script>
+
+    <script type="text/html" id="slaveListTpl">
+        {{# layui.each(d.slaveList, function(index, slave){ }}
+        {{ slave.dataBaseName }}({{ slave.address }}),
+        {{#  }); }}
+    </script>
+    <script type="text/html" id="groupListTpl">
+        {{# layui.each(d.groupList, function(index, group){ }}
+            {{ group.groupName }}
+        {{#  }); }}
+    </script>
+
+    <script type="text/html" id="groupStatusTpl">
+        {{# if(d.status == 1){ }}
+            可写入
+        {{# }else if(d.status == 0){  }}
+            只读
+        {{# }else{ }}
+            禁用
+        {{# } }}
+    </script>
+
+    <script type="text/html" id="logicTableTpl">
+        {{ d.logicTable.logicTableName }}
+    </script>
+    <script type="text/html" id="groupTpl">
+        {{ d.group.groupName }}
+    </script>
+    <script type="text/html" id="dataSourceTpl">
+        {{ d.dataSource.dataSourceName }}
+    </script>
+
+    <script type="text/html" id="barDemo">
+
+<!--    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a> -->
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+
+        <!-- 这里同样支持 laytpl 语法，如： -->
+<!--        {{#  if(d.auth > 2){ }}
+        {{#  } }}-->
+    </script>
+
+    <script type="text/html" id="logicBar">
+
+<!--        <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>-->
+        <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="detail">详情</button>
+        <button class="layui-btn layui-btn-warm  layui-btn-sm" lay-event="addGroup">添加组</button>
+        <button class="layui-btn layui-btn-warm  layui-btn-sm" lay-event="addTable">添加表</button>
+        <!-- 这里同样支持 laytpl 语法，如： -->
+        <!--        {{#  if(d.auth > 2){ }}
+                {{#  } }}-->
+    </script>
+
+
+</div>
+
+<script>
+
+
+layui.config({
+    version: true
+}).use(['form', 'layedit','layer' ,'laydate','laytpl','element','table'], function(){
+    layer = layui.layer;
+    table = layui.table;
+    form = layui.form;
+    var projectId =  layui.router().search.projectId;
+    data = {
+        projectId:projectId
+    }
+
+    $('#addDataSource').on('click',function () {
+        layer.open({
+            type: 2,
+            content: ['dataSource.html','no'], //这里content是一个普通的String
+            maxmin: true,
+            title: "添加数据源",
+            area: ['50%','100%'],
+            end: function () {
+                table.reload('dataSourceList', {});
+            }
+        });
+    })
+    $('#addLogicTable').on('click',function () {
+        layer.open({
+            type: 2,
+            content: ['logicTable.html','no'], //这里content是一个普通的String
+            maxmin: true,
+            title:"添加逻辑表",
+            area: ['50%','100%'],
+            end:function () {
+                table.reload('logicTableList', {});
+            },
+        });
+    });
+    $('#addDataBase').on('click',function () {
+        layer.open({
+            type: 2,
+            content: ['dataBase.html','no'], //这里content是一个普通的String
+            maxmin: true,
+            title:"添加数据库",
+            area: ['40%','30%'],
+            end:function () {
+                table.reload('dataBaseList', {});
+            },
+        });
+    });
+
+    table.init('dataSourceList', {
+        url:'/dataSource/list?projectId='+projectId,
+        parseData:function (res) {
+            var code = res.code == 1 ? 0 : -1
+            return {
+                "code" : code,
+                "msg" : res.msg,
+                "count" : res.count,
+                "data" : res.data
+            };
+        },
+        even:true
+    });
+    table.init('logicTableList', {
+        url:'/logicTable/list?projectId='+projectId,
+        parseData:function (res) {
+            var code = res.code == 1 ? 0 : -1
+            return {
+                "code" : code,
+                "msg" : res.msg,
+                "count" : res.count,
+                "data" : res.data
+            };
+        },
+        even:true
+    });
+    table.init('groupList', {
+        url:'/group/byProject?projectId='+projectId,
+        parseData:function (res) {
+            var code = res.code == 1 ? 0 : -1
+            return {
+                "code" : code,
+                "msg" : res.msg,
+                "count" : res.count,
+                "data" : res.data
+            };
+        },
+        even:true
+    });
+    table.init('tableList', {
+        url:'/table/byProject?projectId='+projectId,
+        parseData:function (res) {
+            var code = res.code == 1 ? 0 : -1
+            return {
+                "code" : code,
+                "msg" : res.msg,
+                "count" : res.count,
+                "data" : res.data
+            };
+        },
+        even:true
+    });
+    table.init('dataBaseList', {
+        url:'/dataBase/list',
+        parseData:function (res) {
+            var code = res.code == 1 ? 0 : -1
+            return {
+                "code" : code,
+                "msg" : res.msg,
+                "count" : res.count,
+                "data" : res.data
+            };
+        },
+        even:true
+    });
+
+    <!--  数据源管理  -->
+    table.on('tool(dataSourceList)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        var data = obj.data; //获得当前行数据
+        var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+        var tr = obj.tr; //获得当前行 tr 的DOM对象
+        if(layEvent === 'del'){ //删除
+            layer.confirm('真的删除行么', function(index){
+                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                layer.close(index);
+                //向服务端发送删除指令
+                alert("功能暂未开放");
+            });
+        } else if(layEvent === 'edit') { //编辑
+            layer.open({
+                type: 2,
+                content: 'dataSource.html#/dataSourceId='+data.dataSourceId, //这里content是一个普通的String
+                maxmin: true,
+                title: "编辑数据源",
+                area: ['50%','100%'],
+                end: function () {
+                    table.reload('dataSourceList', {});
+                }
+            });
+        }
+    });
+    <!--  数据源管理  -->
+
+    <!--  逻辑表管理  -->
+    table.on('tool(logicTableList)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        var data = obj.data; //获得当前行数据
+        var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+        var tr = obj.tr; //获得当前行 tr 的DOM对象
+        if(layEvent === 'addGroup'){ //添加组
+            layer.open({
+                type: 2,
+                content: 'group.html#/logicTableId='+data.logicTableId, //这里content是一个普通的String
+                maxmin: false,
+                title: "添加组",
+                area: ['30%', '30%'],
+                end: function () {
+                    table.reload('groupList', {});
+                }
+            });
+        }else if(layEvent === 'addTable'){
+            layer.open({
+                type: 2,
+                content: 'table.html#/logicTableId='+data.logicTableId, //这里content是一个普通的String
+                maxmin: false,
+                title: "添加表",
+                area: ['50%','50%'],
+                end: function () {
+                    table.reload('tableList', {});
+                }
+            });
+
+
+        }else if(layEvent === 'detail') { //查看
+            layer.open({
+                type: 2,
+                content: 'logicTable.html#/logicTableId='+data.logicTableId, //这里content是一个普通的String
+                maxmin: true,
+                title: "逻辑表详情",
+                area: ['50%','100%'],
+                end: function () {
+                    table.reload('logicTableList', {});
+                }
+            });
+        }
+    });
+    <!--  物理表管理  -->
+
+
+});
+</script>
+</body>
+</html>

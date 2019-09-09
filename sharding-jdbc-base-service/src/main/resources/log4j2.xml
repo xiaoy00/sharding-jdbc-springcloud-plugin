@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration monitorInterval="30" >
+	<properties>
+		<!-- 日志路径 /data1/logs/app/tomcat/sharding-jdbc-base-service/${sys:log4jport} -->
+		<property name="LOG_PATH">/data1/logs/app/tomcat/sharding-jdbc-base-service</property>
+		<!-- 日志文件名字前缀 -->
+		<property name="LOG_NAME_PRE">sharding-jdbc-base-service</property>
+		<!-- 当前实例运行端口号 -->
+		<property name="LOG_PORT">${sys:log4jport}</property>
+	</properties>
+
+	<!--先定义所有的appender-->
+	<!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+	<appenders>
+		<!--这个输出控制台的配置-->
+		<console name="console" target="SYSTEM_OUT">
+			<!--输出日志的格式-->
+			<PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5p] [%t] [%c{1}:%L] [TxId:%X{PtxId} SpanId:%X{PspanId}] %m%n"/>
+		</console>
+
+		<!--<RollingFile name="rollingFileError" fileName="${LOG_PATH}/${LOG_PORT}/${LOG_NAME_PRE}_error.log"-->
+					 <!--filePattern="${LOG_PATH}/${LOG_PORT}/${LOG_NAME_PRE}_error_%i.log">-->
+			<!--<ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>-->
+			<!--<PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5p] [%t] [%c{1}:%L] %m%n"/>-->
+			<!--<Policies>-->
+				<!--&lt;!&ndash;<TimeBasedTriggeringPolicy/>&ndash;&gt;-->
+				<!--<SizeBasedTriggeringPolicy size="100MB"/>-->
+			<!--</Policies>-->
+			<!--<DefaultRolloverStrategy max="20"/>-->
+		<!--</RollingFile>-->
+
+		<RollingFile name="rollingFileWarn" fileName="${LOG_PATH}/${LOG_PORT}/${LOG_NAME_PRE}_warn.log"
+					 filePattern="${LOG_PATH}/${LOG_PORT}/${LOG_NAME_PRE}_warn_%i.log" >
+			<!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+			<!--<ThresholdFilter level="error" onMatch="DENY" onMismatch="NEUTRAL"/>-->
+			<ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+			<PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5p] [%t] [%c{1}:%L] %m%n"/>
+			<Policies>
+				<!--<TimeBasedTriggeringPolicy/>-->
+				<SizeBasedTriggeringPolicy size="100MB"/>
+			</Policies>
+			<DefaultRolloverStrategy max="20"/>
+		</RollingFile>
+
+		<!-- 这个会打印出所有的info及以下级别的信息，超过size大小将自动切换到另一个文件保存-->
+		<RollingFile name="rollingFileInfo" fileName="${LOG_PATH}/${LOG_PORT}/${LOG_NAME_PRE}_info.log"
+					 filePattern="${LOG_PATH}/${LOG_PORT}/${LOG_NAME_PRE}_info_%i.log" >
+			<!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+			<ThresholdFilter level="warn" onMatch="DENY" onMismatch="NEUTRAL"/>
+			<ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+			<PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5p] [%t] [%c{1}:%L] %m%n"/>
+			<Policies>
+				<!--<TimeBasedTriggeringPolicy/>-->
+				<SizeBasedTriggeringPolicy size="100MB"/>
+			</Policies>
+			<DefaultRolloverStrategy max="20"/>
+		</RollingFile>
+
+	</appenders>
+	<!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->
+	<loggers>
+		<root level="info">
+			<!--<appender-ref ref="rollingFileInfo" />-->
+			<!--<appender-ref ref="rollingFileWarn"/>-->
+			<!--<appender-ref ref="rollingFileError"/>-->
+			<appender-ref ref="console"/>
+		</root>
+
+		<logger name="com.xin.sharding" additivity="true" level="info">
+		</logger>
+
+	</loggers>
+</configuration>

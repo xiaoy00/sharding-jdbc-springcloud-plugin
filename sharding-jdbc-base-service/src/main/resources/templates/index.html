@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet"  href = "/layui2.3.0/css/layui.css" media="all" />
+    <script type="text/javascript" src="/layui2.3.0/layui.js"></script>
+    <link rel="stylesheet" href="/css/public.css" media="all" />
+    <link rel="stylesheet" href="/css/index.css"/>
+    <link rel="stylesheet" href="/css/style.css" media="all" />
+    <script type="text/javascript" src="/js/bodyTab.js"></script>
+    <script type="text/javascript" src="/js/cache.js"></script>
+    <script type="text/javascript" src="/js/index.js"></script>
+    <script type="text/javascript" src="/js/html/index.js"></script>
+    <script type="text/javascript" src="/js/jquery-2.0.0.min.js"></script>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+
+<body>
+<div class="layui-container">
+    <ul class="layui-row" style="margin-top:20%" id="project">
+        {{#  layui.each(d, function(index, item){ }}
+        <li class="layui-col-sm12 layui-col-md3">
+            <div class="fly-extend-list layui-card">
+                <div class="fly-extend-list-header">
+                    <h2 class="fly-extend-title layui-elip">
+                        <a href="/project#/projectId={{ item.projectId }}">{{ item.projectName }} </a>
+
+                    </h2>
+                    <div class="layui-badge layui-bg-green layui-hide-xs"> {{ item.projectName }}</div>
+                </div>
+            </div>
+        </li>
+        {{#  }); }}
+    </ul>
+</div>
+<script>
+    layui.use('laytpl', function(){
+
+        var laytpl = layui.laytpl;
+        getProjectList();
+
+        function getProjectList(){
+            $.ajax({
+                url: "/project/list",
+                type: "POST",
+                dataType: "json",
+                success: function (result) {
+                    init(result.data);
+                },
+                error: function (e) {
+                    layer.msg("加载数据出错，请稍后重试！", {icon: 5});
+                }
+            });
+        }
+        function init(data) {
+            //基本数据填充
+            var tpl = document.getElementById('project').innerHTML;
+            var view = document.getElementById('project');
+            laytpl(tpl).render(data, function(html){
+                view.innerHTML = html;
+            });
+        }
+
+    });
+
+</script>
+</body>
+</html>

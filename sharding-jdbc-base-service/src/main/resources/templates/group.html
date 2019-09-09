@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet"  href = "/layui2.3.0/css/layui.css" media="all" />
+    <script type="text/javascript" src="/layui2.3.0/layui.js"></script>
+    <link rel="stylesheet" href="/css/public.css" media="all" />
+    <link rel="stylesheet" href="/css/index.css"/>
+    <link rel="stylesheet" href="/css/style.css" media="all" />
+    <script type="text/javascript" src="/js/bodyTab.js"></script>
+    <script type="text/javascript" src="/js/cache.js"></script>
+    <script type="text/javascript" src="/js/index.js"></script>
+    <script type="text/javascript" src="/js/jquery-2.0.0.min.js"></script>
+    <meta charset="UTF-8"/>
+    <title>新建组</title>
+</head>
+<body>
+<div class="layui-container">
+    <form class="layui-form" lay-filter="logicTableDetail" action="" id="logicTableDetail">
+        <!--   <script type="text/html" id="dataSourceDetailTpl">-->
+        <div class="layui-form-item">
+            <label class="layui-form-label">组名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="groupName"  lay-verify="required" placeholder="组名称" autocomplete="off" class="layui-input"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <label class="layui-form-mid layui-word-aux">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+            </label>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+<script>
+    var group = {
+        groupName:"",
+        logicTableId:""
+    }
+
+
+    layui.config({
+        version: true
+    }).use(['form','table', 'layedit', 'laydate','laytpl','element'], function() {
+        var form = layui.form;
+        var laytpl = layui.laytpl;
+        var table = layui.table;
+        var logicTableId =  layui.router().search.logicTableId;
+        group['logicTableId']= logicTableId
+
+
+        form.on('submit(formDemo)', function(obj){
+            var data = obj.field;
+            group['groupName'] = data.groupName;
+            create(group);
+            return false;
+        });
+
+
+        function create() {
+            var url = '/group/add';
+            layui.jquery.ajax({
+                url: url,
+                type: "POST",
+                dataType: "json",
+                data:JSON.stringify(group),
+                contentType:"application/json",
+                success: function (result) {
+                    if(result.code == 1){
+                        layer.msg('操作成功', function(){
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));
+                        });
+                    }else {
+                        layer.alert("操作失败")
+                    }
+                }
+            });
+        }
+
+    });
+</script>
+</body>
+</html>
