@@ -6,6 +6,7 @@
  * 其他方法，都是所有分组轮询
  * 每个分组的table数量不固定
  * 每个分组的散列方法一致
+ [算法实现](https://github.com/xiaoy00/sharding-jdbc-springcloud-plugin/blob/master/yxp-sharding/src/main/java/com/xin/sharding/algorithm/MyGroupComplexKeysShardingAlgorithm.java)
  
  ·········问题： 扩容3次，N次后。    分组越来越多。 轮询每个分组的话， 可能需要查询N张表。
  
